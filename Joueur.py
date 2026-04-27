@@ -15,6 +15,7 @@ class Joueur:
         self.image = pygame.image.load(image)
         self.image = pygame.transform.smoothscale_by(self.image, 1) # 1 = taille de base
         self.position = self.image.get_rect()
+        self.position.bottomleft = (0, 720) # On place notre perso en bas à gauche
 
     def __deplacement__(self)->None:
         """Gére les déplacements du Joueur :\n
@@ -24,9 +25,13 @@ class Joueur:
         touche = pygame.key.get_pressed()
 
         if touche[K_q] or touche[K_LEFT]:
-            self.position.left -= 1
+            if touche[K_SPACE] or touche[K_UP]:
+                self.position.top -= 1 # permet de sauter et de se déplacer vers la gauche
+            self.position.left -= 1 
         elif touche[K_d] or touche[K_RIGHT]:
-            self.position.left += 1
+            if touche[K_SPACE] or touche[K_UP]:
+                self.position.top -= 1 # permet de sauter et de se déplacer vers la droite
+            self.position.left += 1 
         elif touche[K_SPACE] or touche[K_UP]:
             self.position.top -= 1
 
