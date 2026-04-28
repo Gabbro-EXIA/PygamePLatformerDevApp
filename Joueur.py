@@ -12,7 +12,7 @@ FENETRE = pygame.display.set_mode((1280, 720)) # Résolution HD, suffisant pour 
 class Joueur:
     def __init__(self, image:str)->None:
         """Création d'un nouveau Joueur et initialisation des variables"""
-        self.image = pygame.image.load(image)
+        self.image = pygame.image.load(image).convert_alpha()
         self.image = pygame.transform.smoothscale_by(self.image, 1) # 1 = taille de base
         self.position = self.image.get_rect()
         self.position.bottomleft = (0, 720) # On place notre perso en bas à gauche
@@ -27,25 +27,38 @@ class Joueur:
         if touche[K_q] or touche[K_LEFT]:
             if touche[K_SPACE] or touche[K_UP]:
                 self.position.top -= 1 # permet de sauter et de se déplacer vers la gauche
-            self.position.left -= 1 
+            self.position.left -= 1
         elif touche[K_d] or touche[K_RIGHT]:
             if touche[K_SPACE] or touche[K_UP]:
                 self.position.top -= 1 # permet de sauter et de se déplacer vers la droite
             self.position.left += 1 
         elif touche[K_SPACE] or touche[K_UP]:
             self.position.top -= 1
+    
+    def __tomber__(self)->None:
+        """Gère le système de gravité pour le Joueur"""
+        while self.position.bottom != 720:
+            self.position.top += 1
 
 
-Test = Joueur("./astro_neutre.png")
+
+Tab_Test = ["neutre_D", "neutre_G", "saut_D", "saut_G", "mouv_D", "mouv_G"] # Nom des images
+l = [f"./Perso/{k}.png" for k in Tab_Test]
+Test = [Joueur(perso) for perso in l]
+for i in range(len(Test)-1):
+    Test[i+1].position.left = Test[i].position.right 
+# Test = Joueur("./Perso/mouv_D.png")
 
 #On teste la classe Joueur dans la boucle de jeu
 
 while True:
     FENETRE.fill([255, 0, 0]) # On remplit la fenêtre de jeu de rouge
-    FENETRE.blit(Test.image, Test.position)
+    #FENETRE.blit(Test.image, Test.position)
+    for elt in Test:
+        FENETRE.blit(elt.image, elt.position)
     pygame.display.flip() # on affiche notre perso
     for events in pygame.event.get():
         if events.type == QUIT: #si l'utilisateur clique sur la croix pour fermer la fenêtre, on ferme le jeu
             sys.exit()
-        elif events.type == KEYDOWN:
-            Test.__deplacement__()
+        # elif events.type == KEYDOWN:
+        #     Test.__deplacement__()
