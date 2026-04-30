@@ -9,9 +9,10 @@ pygame.key.set_repeat(10) # en ms | 10 fluide
 
 FENETRE = pygame.display.set_mode((1280, 720)) # Résolution HD, suffisant pour tester la classe joueur
 
-class Joueur:
+class Joueur(pygame.sprite.Sprite):
     def __init__(self, image:str)->None:
         """Création d'un nouveau Joueur et initialisation des variables"""
+        super().__init__() # On fait de notre Joueur un objet utilisable par la classe Sprite
         self.image = pygame.image.load(image).convert_alpha()
         self.image = pygame.transform.smoothscale_by(self.image, 1) # 1 = taille de base
         self.position = self.image.get_rect()
@@ -37,16 +38,16 @@ class Joueur:
     
     def __tomber__(self)->None:
         """Gère le système de gravité pour le Joueur"""
-        while self.position.bottom != 720:
-            self.position.top += 1
-
+        #if pygame.sprite.spritecollide(self, plateforme): A utiliser avec les objets de la classe Plateforme
+            # while self.position.bottom != 720:
+            #     self.position.top += 1
 
 
 Tab_Test = ["neutre_D", "neutre_G", "saut_D", "saut_G", "mouv_D", "mouv_G"] # Nom des images
 l = [f"./Perso/{k}.png" for k in Tab_Test]
-Test = [Joueur(perso) for perso in l]
-for i in range(len(Test)-1):
-    Test[i+1].position.left = Test[i].position.right 
+Tab_Sprite = [Joueur(perso) for perso in l] # Un joueur différent par image
+for i in range(len(Tab_Sprite)-1):
+    Tab_Sprite[i+1].position.left = Tab_Sprite[i].position.right # Pour vérifier la taille
 # Test = Joueur("./Perso/mouv_D.png")
 
 #On teste la classe Joueur dans la boucle de jeu
@@ -54,11 +55,11 @@ for i in range(len(Test)-1):
 while True:
     FENETRE.fill([255, 0, 0]) # On remplit la fenêtre de jeu de rouge
     #FENETRE.blit(Test.image, Test.position)
-    for elt in Test:
+    for elt in Tab_Sprite:
         FENETRE.blit(elt.image, elt.position)
     pygame.display.flip() # on affiche notre perso
     for events in pygame.event.get():
         if events.type == QUIT: #si l'utilisateur clique sur la croix pour fermer la fenêtre, on ferme le jeu
             sys.exit()
         # elif events.type == KEYDOWN:
-        #     Test.__deplacement__()
+        # Test.__deplacement__()
