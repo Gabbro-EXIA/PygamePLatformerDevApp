@@ -5,7 +5,9 @@ from pygame.locals import *
 
 pygame.init() #initialisation
 
-pygame.key.set_repeat(10) # en ms | 10 fluide
+#pygame.key.set_repeat(10) # en ms | 10 fluide
+
+FPS = pygame.time.Clock()
 
 FENETRE = pygame.display.set_mode((1280, 720)) # Résolution HD, suffisant pour tester la classe joueur
 
@@ -43,23 +45,24 @@ class Joueur(pygame.sprite.Sprite):
             #     self.position.top += 1
 
 
-Tab_Test = ["neutre_D", "neutre_G", "saut_D", "saut_G", "mouv_D", "mouv_G"] # Nom des images
-l = [f"./Perso/{k}.png" for k in Tab_Test]
-Tab_Sprite = [Joueur(perso) for perso in l] # Un joueur différent par image
-for i in range(len(Tab_Sprite)-1):
-    Tab_Sprite[i+1].position.left = Tab_Sprite[i].position.right # Pour vérifier la taille
-# Test = Joueur("./Perso/mouv_D.png")
+# Tab_Test = ["neutre_D", "neutre_G", "saut_D", "saut_G", "mouv_D", "mouv_G"] # Nom des images
+# l = [f"./Perso/{k}.png" for k in Tab_Test]
+# Tab_Sprite = [Joueur(perso) for perso in l] # Un joueur différent par image
+# for i in range(len(Tab_Sprite)-1):
+#     Tab_Sprite[i+1].position.left = Tab_Sprite[i].position.right # Pour vérifier la taille
+Test = Joueur("./Perso/mouv_D.png")
 
 #On teste la classe Joueur dans la boucle de jeu
 
 while True:
     FENETRE.fill([255, 0, 0]) # On remplit la fenêtre de jeu de rouge
-    #FENETRE.blit(Test.image, Test.position)
-    for elt in Tab_Sprite:
-        FENETRE.blit(elt.image, elt.position)
+    FENETRE.blit(Test.image, Test.position)
+    # for elt in Tab_Sprite:
+    #     FENETRE.blit(elt.image, elt.position)
     pygame.display.flip() # on affiche notre perso
     for events in pygame.event.get():
         if events.type == QUIT: #si l'utilisateur clique sur la croix pour fermer la fenêtre, on ferme le jeu
             sys.exit()
         # elif events.type == KEYDOWN:
-        # Test.__deplacement__()
+    Test.__deplacement__()
+    FPS.tick(60) # Gère la vitesse à laquelle se déplace le perso 
