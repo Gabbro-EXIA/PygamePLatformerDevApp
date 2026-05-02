@@ -22,8 +22,9 @@ class Joueur(pygame.sprite.Sprite):
         self.image = pygame.transform.smoothscale_by(self.image, 1) # 1 = taille de base
         self.position = self.image.get_rect()
         self.position.bottomleft = (0, 720) # On place notre perso en bas à gauche
+        self.saut = False # En train de sauter ? (Par défaut non)
 
-    def deplacement(self)->None:
+    def deplacement(self):
         """Gére les déplacements du Joueur :\n
         - q ou ← (flèche gauche) pour se déplacer à gauche\n
         - d ou → (flèche droite) pour se déplacer à droite\n
@@ -31,24 +32,13 @@ class Joueur(pygame.sprite.Sprite):
         touche = pygame.key.get_pressed()
 
         if touche[K_q] or touche[K_LEFT]:
-            if touche[K_SPACE] or touche[K_UP]:
-                self.position.top -= 1 # permet de sauter et de se déplacer vers la gauche
-                self.maj("saut_G")
-            else:
+            if not self.saut:
                 self.maj("mouv_G")
             self.position.left -= 1
         elif touche[K_d] or touche[K_RIGHT]:
-            if touche[K_SPACE] or touche[K_UP]:
-                self.position.top -= 1 # permet de sauter et de se déplacer vers la droite
-                self.maj("saut_D")
-            else:
+            if not self.saut:
                 self.maj("mouv_D")
             self.position.left += 1 
-        elif touche[K_SPACE] or touche[K_UP]:
-            self.maj("saut_G") if self.source[-1] == "G" else self.maj("saut_D")
-            self.position.top -= 1
-        else:
-            self.maj("neutre_G") if self.source[-1] == "G" else self.maj("neutre_D")
     
     def maj(self, image : str)->None:
         """Met à jour l'image du Joueur (pendant le déplacement ou pas)"""
@@ -60,7 +50,31 @@ class Joueur(pygame.sprite.Sprite):
         #if pygame.sprite.spritecollide(self, plateforme): A utiliser avec les objets de la classe Plateforme
             # while self.position.bottom != 720:
             #     self.position.top += 1
+        touche = pygame.key.get_pressed()
 
+        if touche[K_q] or touche[K_LEFT]:
+            self.maj("saut_G")
+        elif touche[K_d] or touche[K_RIGHT]:
+            self.maj("saut_D")
+        else:
+            self.maj("saut_G") if self.source[-1] == 'G' else self.maj("saut_D")
+
+        self.position.bottom += 1
+        self.saut = True
+    
+    def sauter(self)->None:
+        """Permet au Joueur de sauter tout en metant à jour l'image"""
+        touche = pygame.key.get_pressed()
+
+        if touche[K_q] or touche[K_LEFT]:
+            self.maj("saut_G")
+        elif touche[K_d] or touche[K_RIGHT]:
+            self.maj("saut_D")
+        else:
+            self.maj("saut_G") if self.source[-1] == 'G' else self.maj("saut_D")
+
+        self.position.top -= 1
+        self.saut = True
 
 # Tab_Test = ["neutre_D", "neutre_G", "saut_D", "saut_G", "mouv_D", "mouv_G"] # Nom des images
 # l = [f"./Perso/{k}.png" for k in Tab_Test]
@@ -71,6 +85,8 @@ Test = Joueur()
 
 #On teste la classe Joueur dans la boucle de jeu
 
+i = 100 # Permet de savoir l'état du saut + hauteur
+
 while True:
     FENETRE.fill([255, 0, 0]) # On remplit la fenêtre de jeu de rouge
     FENETRE.blit(Test.image, Test.position)
@@ -80,6 +96,18 @@ while True:
     for events in pygame.event.get():
         if events.type == QUIT: #si l'utilisateur clique sur la croix pour fermer la fenêtre, on ferme le jeu
             sys.exit()
-        # elif events.type == KEYDOWN:
+        elif events.type == KEYDOWN:
+            if events.key == K_SPACE:
+                if Test.position.bottom == 720:
+                    i = 0
+    if i < 100:
+        Test.sauter()
+        i+=1
+    if i == 100:
+        if Test.position.bottom != 720:
+            Test.tomber()
+        else:
+            Test.saut = False
+            Test.maj("neutre_G") if Test.source[-1] == "G" else Test.maj("neutre_D")
     Test.deplacement()
     FPS.tick(60) # Gère la vitesse à laquelle se déplace le perso 
