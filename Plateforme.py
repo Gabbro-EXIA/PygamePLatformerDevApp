@@ -17,7 +17,7 @@ class Plateforme(pygame.sprite.Sprite) :
         self.rect = self.image.get_rect(topleft=(x, y))
     
     def afficher(self, surface):
-        pygame.draw.rect(surface,(0,255,0),self.rect)
+        surface.blit(self.image, self.rect)
 
 #plateformes = [Plateforme(pygame.Rect(200, 500, 300, 20)),Plateforme(pygame.Rect(600, 400, 200, 20)),Plateforme(pygame.Rect(100, 300, 150, 20))]
 plateformes = pygame.sprite.Group()
