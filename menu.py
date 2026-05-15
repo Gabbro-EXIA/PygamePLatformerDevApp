@@ -55,10 +55,11 @@ class menu:
             
 
 
-
+    #c'est le plus important (bouton + fond)
     def bouton(self):
         #creation du fond d'écran
         ecran = pygame.image.load("visuel/fond_galaxy_Getty_image.jpg").convert()
+        ecran = pygame.transform.scale(ecran, (640, 480))
         self.screen.blit(ecran, (0, 0))
 
 
