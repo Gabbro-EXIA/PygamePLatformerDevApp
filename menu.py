@@ -64,9 +64,9 @@ class menu:
 
         font = pygame.font.Font(None, 74)
 
-        text = font.render("ASTRONAUT RESCUE", True, (200, 200, 200))
+        text = font.render("ASTRONAUT RESCUER", True, (200, 200, 200))
 
-        self.screen.blit(text, (50, 125))
+        self.screen.blit(text, (30, 125))
 
 
         font_bouton = pygame.font.Font(None, 60)
